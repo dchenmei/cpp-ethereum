@@ -329,12 +329,15 @@ BOOST_AUTO_TEST_CASE(eth_sendTransaction)
         rpcClient->eth_getTransactionCount(toJS(address), "latest"));
     auto balance2 = web3->ethereum()->balanceAt(receiver.address());
     string balanceString2 = rpcClient->eth_getBalance(toJS(receiver.address()), "latest");
+    Json::Value receipt = rpcClient->eth_getTransactionReceipt(txHash);
 
     BOOST_CHECK_EQUAL(countAt, web3->ethereum()->countAt(address));
     BOOST_CHECK_EQUAL(countAt, 1);
     BOOST_CHECK_EQUAL(toJS(balance2), balanceString2);
     BOOST_CHECK_EQUAL(jsToU256(balanceString2), txAmount);
     BOOST_CHECK_EQUAL(txAmount, balance2);
+    BOOST_CHECK_EQUAL(receipt["from"], t["from"]);
+    BOOST_CHECK_EQUAL(receipt["to"], t["to"]);
 }
 
 BOOST_AUTO_TEST_CASE(eth_sendRawTransaction_validTransaction)
